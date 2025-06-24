@@ -52,6 +52,8 @@
         }
         .form-group input[type="text"],
         .form-group input[type="date"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
         .form-group select {
             width: calc(100% - 10px); /* Ajuste para padding */
             padding: 8px;
@@ -62,6 +64,8 @@
         }
         .form-group input[type="text"]:focus,
         .form-group input[type="date"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="tel"]:focus,
         .form-group select:focus {
             border-color: #66afe9;
             outline: none;
@@ -101,40 +105,25 @@
         }
         .button-group {
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+            justify-content: center; /* Centrar el botón final */
             margin-top: 30px;
             border-top: 1px solid #eee;
             padding-top: 20px;
         }
-        .button-group button {
-            padding: 10px 20px;
+        .button-group .submit-button {
+            padding: 12px 25px;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            border-radius: 5px;
+            font-size: 18px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .button-group .back-button {
-            background-color: #f0ad4e;
+            background-color: #28a745; /* Un verde más agradable para "Guardar y Finalizar" */
             color: white;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .button-group .back-button:hover {
-            background-color: #ec971f;
-        }
-        .button-group .save-button {
-            background-color: #5cb85c;
-            color: white;
-        }
-        .button-group .save-button:hover {
-            background-color: #4cae4c;
-        }
-        .button-group .next-button {
-            background-color: #0275d8;
-            color: white;
-        }
-        .button-group .next-button:hover {
-            background-color: #025aa5;
+        .button-group .submit-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
         }
         .confidentiality-statement {
             font-size: 13px;
@@ -215,15 +204,28 @@
             font-weight: bold;
             margin-right: 3px;
         }
-        /* Hide travel plan details by default */
+        /* Ocultar detalles de planes de viaje por defecto */
         #specificTravelPlansDetails {
             display: none;
         }
-        #addressStayDetails {
-            display: block; /* Shown by default */
+        #spouseDetails, #fatherDetails, #motherDetails, #immediateRelativesDetails, #previousEmploymentDetails, #educationDetails {
+            display: none; /* Ocultar por defecto */
+        }
+        #mailingAddressDetails {
+            display: none;
+        }
+        #previousVisaDetails, #previousRefusalDetails, #immigrantPetitionDetails, #pastTravelDetails {
+            display: none; /* Ocultar por defecto para preguntas condicionales */
+        }
+        /* Estilos para campos de seguridad */
+        .security-question .question {
+            color: #d9534f; /* Color para preguntas de seguridad */
+        }
+        .security-question .radio-group label {
+            color: #333;
         }
 
-        /* Responsive adjustments */
+        /* Ajustes responsivos */
         @media (max-width: 768px) {
             .grid-container {
                 grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
@@ -250,31 +252,37 @@
 </head>
 <body>
     <div class="container">
-        <form action="https://formspree.io/f/mzzgkpjr" method="POST">
+        <!-- El atributo 'action' debe ser tu URL de Formspree, por ejemplo: https://formspree.io/f/abcd123xyz -->
+        <!-- O para Netlify Forms, usa: data-netlify="true" name="nombre-de-tu-formulario" -->
+        <form action="https://formspree.io/f/tuIDdeFormulario" method="POST" name="formulario-visa-espanol">
+            <!-- Honeypot para protección contra spam (no visible para usuarios) -->
+            <input type="text" name="_gotcha" style="display:none" />
+
+            <!-- Información Personal 1 -->
             <div class="section-title">Información Personal 1</div>
             <div class="grid-container">
                 <div class="grid-left">
                     <div class="form-group">
                         <label for="surnames">Apellidos</label>
                         <div class="input-wrapper">
-                            <input type="text" id="surnames" name="surnames" placeholder="Ej: FERNANDEZ GARCIA">
+                            <input type="text" id="surnames" name="apellidos" placeholder="Ej: FERNANDEZ GARCIA">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="givenNames">Nombres</label>
                         <div class="input-wrapper">
-                            <input type="text" id="givenNames" name="givenNames" placeholder="Ej: JUAN MIGUEL">
+                            <input type="text" id="givenNames" name="nombres" placeholder="Ej: JUAN MIGUEL">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="nativeAlphabetName">Nombre Completo en Alfabeto Nativo</label>
                         <div class="input-wrapper">
-                            <input type="text" id="nativeAlphabetName" name="nativeAlphabetName">
+                            <input type="text" id="nativeAlphabetName" name="nombre_nativo">
                             <div class="checkbox-group" style="margin-top: 5px;">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="notApplyNativeAlphabet" name="notApplyNativeAlphabet">
+                                    <input type="checkbox" id="notApplyNativeAlphabet" name="no_aplica_nombre_nativo">
                                     No Aplica/Tecnología No Disponible
                                 </label>
                             </div>
@@ -284,26 +292,26 @@
                     <div class="form-group">
                         <p class="question">P: ¿Ha utilizado alguna vez otros nombres (es decir, de soltera, religioso, profesional, alias, etc.)?</p>
                         <div class="radio-group">
-                            <label><input type="radio" name="otherNames" value="si"> Sí</label>
-                            <label><input type="radio" name="otherNames" value="no" checked> No</label>
+                            <label><input type="radio" name="otros_nombres" value="si"> Sí</label>
+                            <label><input type="radio" name="otros_nombres" value="no" checked> No</label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <p class="question">P: ¿Tiene un telecódigo que represente su nombre?</p>
                         <div class="radio-group">
-                            <label><input type="radio" name="telecode" value="si"> Sí</label>
-                            <label><input type="radio" name="telecode" value="no" checked> No</label>
+                            <label><input type="radio" name="telecodigo" value="si"> Sí</label>
+                            <label><input type="radio" name="telecodigo" value="no" checked> No</label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="sex">Sexo</label>
                         <div class="input-wrapper">
-                            <select id="sex" name="sex">
+                            <select id="sex" name="sexo">
                                 <option value="">- SELECCIONE UNO -</option>
-                                <option value="male">MASCULINO</option>
-                                <option value="female">FEMENINO</option>
+                                <option value="masculino">MASCULINO</option>
+                                <option value="femenino">FEMENINO</option>
                             </select>
                         </div>
                     </div>
@@ -311,13 +319,13 @@
                     <div class="form-group">
                         <label for="maritalStatus">Estado Civil <span class="info-icon">ⓘ</span></label>
                         <div class="input-wrapper">
-                            <select id="maritalStatus" name="maritalStatus">
+                            <select id="maritalStatus" name="estado_civil">
                                 <option value="">- SELECCIONE UNO -</option>
-                                <option value="single">Soltero</option>
-                                <option value="married">Casado</option>
-                                <option value="divorced">Divorciado</option>
-                                <option value="widowed">Viudo</option>
-                                <option value="separated">Separado</option>
+                                <option value="soltero">Soltero</option>
+                                <option value="casado">Casado</option>
+                                <option value="divorciado">Divorciado</option>
+                                <option value="viudo">Viudo</option>
+                                <option value="separado">Separado</option>
                             </select>
                         </div>
                     </div>
@@ -326,24 +334,24 @@
                     <div class="form-group">
                         <label for="dob">Fecha <span class="info-icon">ⓘ</span></label>
                         <div class="input-wrapper">
-                            <input type="date" id="dob" name="dob" placeholder="(Formato: DD-MMM-AAAA)">
+                            <input type="date" id="dob" name="fecha_nacimiento" placeholder="(Formato: DD-MMM-AAAA)">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="cityOfBirth">Ciudad</label>
                         <div class="input-wrapper">
-                            <input type="text" id="cityOfBirth" name="cityOfBirth">
+                            <input type="text" id="cityOfBirth" name="ciudad_nacimiento">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="stateProvinceOfBirth">Estado/Provincia</label>
                         <div class="input-wrapper">
-                            <input type="text" id="stateProvinceOfBirth" name="stateProvinceOfBirth">
+                            <input type="text" id="stateProvinceOfBirth" name="estado_provincia_nacimiento">
                             <div class="checkbox-group" style="margin-top: 5px;">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="notApplyStateProvince" name="notApplyStateProvince">
+                                    <input type="checkbox" id="notApplyStateProvince" name="no_aplica_estado_provincia_nacimiento">
                                     No Aplica
                                 </label>
                             </div>
@@ -353,12 +361,13 @@
                     <div class="form-group">
                         <label for="countryRegionOfBirth">País/Región</label>
                         <div class="input-wrapper">
-                            <select id="countryRegionOfBirth" name="countryRegionOfBirth">
+                            <select id="countryRegionOfBirth" name="pais_region_nacimiento">
                                 <option value="">- SELECCIONE UNO -</option>
                                 <option value="usa">Estados Unidos</option>
                                 <option value="colombia">Colombia</option>
                                 <option value="mexico">México</option>
-                                </select>
+                                <!-- Añade más países según sea necesario -->
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -395,44 +404,46 @@
                 </div>
             </div>
 
+            <!-- Información Personal 2 -->
             <div class="section-title" style="margin-top: 40px;">Información Personal 2</div>
             <div class="grid-container">
                 <div class="grid-left">
                     <div class="form-group">
                         <label for="nationality">País/Región de Origen (Nacionalidad)</label>
                         <div class="input-wrapper">
-                            <select id="nationality" name="nationality">
+                            <select id="nationality" name="nacionalidad">
                                 <option value="">- SELECCIONE UNO -</option>
                                 <option value="usa">Estados Unidos</option>
                                 <option value="colombia">Colombia</option>
                                 <option value="mexico">México</option>
-                                </select>
+                                <!-- Añade más nacionalidades según sea necesario -->
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <p class="question">P: ¿Tiene o ha tenido alguna nacionalidad distinta a la indicada anteriormente?</p>
                         <div class="radio-group">
-                            <label><input type="radio" name="otherNationality" value="si"> Sí</label>
-                            <label><input type="radio" name="otherNationality" value="no" checked> No</label>
+                            <label><input type="radio" name="otra_nacionalidad" value="si"> Sí</label>
+                            <label><input type="radio" name="otra_nacionalidad" value="no" checked> No</label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <p class="question">P: ¿Es usted residente permanente de un país/región distinto a su país/región de origen (nacionalidad) indicado anteriormente?</p>
                         <div class="radio-group">
-                            <label><input type="radio" name="permanentResident" value="si"> Sí</label>
-                            <label><input type="radio" name="permanentResident" value="no" checked> No</label>
+                            <label><input type="radio" name="residente_permanente_otro_pais" value="si"> Sí</label>
+                            <label><input type="radio" name="residente_permanente_otro_pais" value="no" checked> No</label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="nationalId">Número de Identificación Nacional</label>
                         <div class="input-wrapper">
-                            <input type="text" id="nationalId" name="nationalId">
+                            <input type="text" id="nationalId" name="num_identificacion_nacional">
                             <div class="checkbox-group" style="margin-top: 5px;">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="notApplyNationalId" name="notApplyNationalId">
+                                    <input type="checkbox" id="notApplyNationalId" name="no_aplica_num_identificacion_nacional">
                                     No Aplica
                                 </label>
                             </div>
@@ -442,10 +453,10 @@
                     <div class="form-group">
                         <label for="ssn">Número de Seguro Social de EE. UU.</label>
                         <div class="input-wrapper">
-                            <input type="text" id="ssn" name="ssn" pattern="[0-9]{3}-[0-9]{2}-[0-9]{4}" placeholder="XXX-XX-XXXX">
+                            <input type="text" id="ssn" name="ssn_eeuu" pattern="[0-9]{3}-[0-9]{2}-[0-9]{4}" placeholder="XXX-XX-XXXX">
                             <div class="checkbox-group" style="margin-top: 5px;">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="notApplySsn" name="notApplySsn">
+                                    <input type="checkbox" id="notApplySsn" name="no_aplica_ssn">
                                     No Aplica
                                 </label>
                             </div>
@@ -455,10 +466,10 @@
                     <div class="form-group">
                         <label for="taxpayerId">Número de Identificación Fiscal de EE. UU.</label>
                         <div class="input-wrapper">
-                            <input type="text" id="taxpayerId" name="taxpayerId">
+                            <input type="text" id="taxpayerId" name="itin_eeuu">
                             <div class="checkbox-group" style="margin-top: 5px;">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" id="notApplyTaxId" name="notApplyTaxId">
+                                    <input type="checkbox" id="notApplyTaxId" name="no_aplica_itin">
                                     No Aplica
                                 </label>
                             </div>
@@ -478,6 +489,356 @@
                 </div>
             </div>
 
+            <!-- Dirección y Teléfono -->
+            <div class="section-title" style="margin-top: 40px;">Dirección y Teléfono</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <div class="sub-section-title">Dirección de Casa</div>
+                    <div class="form-group">
+                        <label for="homeStreetAddress1">Dirección (Línea 1)</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="homeStreetAddress1" name="domicilio_linea1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="homeStreetAddress2">Dirección (Línea 2) *Opcional</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="homeStreetAddress2" name="domicilio_linea2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="homeCity">Ciudad</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="homeCity" name="domicilio_ciudad">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="homeStateProvince">Estado/Provincia</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="homeStateProvince" name="domicilio_estado_provincia">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notApplyHomeState" name="no_aplica_domicilio_estado">
+                                    No Aplica
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="homeZipCode">Código Postal</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="homeZipCode" name="domicilio_codigo_postal">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notApplyHomeZipCode" name="no_aplica_domicilio_codigo_postal">
+                                    No Aplica
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="homeCountryRegion">País/Región</label>
+                        <div class="input-wrapper">
+                            <select id="homeCountryRegion" name="domicilio_pais_region">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="usa">Estados Unidos</option>
+                                <option value="colombia">Colombia</option>
+                                <option value="mexico">México</option>
+                                <!-- Añade más países según sea necesario -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sub-section-title">Dirección Postal</div>
+                    <div class="form-group">
+                        <p class="question">P: ¿Es su dirección postal la misma que la de su domicilio?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="sameMailingAddress" value="si" id="sameMailingAddressYes" checked> Sí</label>
+                            <label><input type="radio" name="sameMailingAddress" value="no" id="sameMailingAddressNo"> No</label>
+                        </div>
+                    </div>
+
+                    <div id="mailingAddressDetails">
+                        <div class="form-group">
+                            <label for="mailingStreetAddress1">Dirección Postal (Línea 1)</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="mailingStreetAddress1" name="direccion_postal_linea1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mailingStreetAddress2">Dirección Postal (Línea 2) *Opcional</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="mailingStreetAddress2" name="direccion_postal_linea2">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mailingCity">Ciudad Postal</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="mailingCity" name="direccion_postal_ciudad">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mailingStateProvince">Estado/Provincia Postal</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="mailingStateProvince" name="direccion_postal_estado_provincia">
+                                <div class="checkbox-group" style="margin-top: 5px;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="notApplyMailingState" name="no_aplica_direccion_postal_estado">
+                                        No Aplica
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mailingZipCode">Código Postal Postal</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="mailingZipCode" name="direccion_postal_codigo_postal">
+                                <div class="checkbox-group" style="margin-top: 5px;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="notApplyMailingZipCode" name="no_aplica_direccion_postal_codigo_postal">
+                                        No Aplica
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mailingCountryRegion">País/Región Postal</label>
+                            <div class="input-wrapper">
+                                <select id="mailingCountryRegion" name="direccion_postal_pais_region">
+                                    <option value="">- SELECCIONE UNO -</option>
+                                    <option value="usa">Estados Unidos</option>
+                                    <option value="colombia">Colombia</option>
+                                    <option value="mexico">México</option>
+                                    <!-- Añade más países según sea necesario -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sub-section-title">Teléfono</div>
+                    <div class="form-group">
+                        <label for="primaryPhoneNumber">Número de Teléfono Principal</label>
+                        <div class="input-wrapper">
+                            <input type="tel" id="primaryPhoneNumber" name="telefono_principal">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="secondaryPhoneNumber">Número de Teléfono Secundario</label>
+                        <div class="input-wrapper">
+                            <input type="tel" id="secondaryPhoneNumber" name="telefono_secundario">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notApplySecondaryPhone" name="no_aplica_telefono_secundario">
+                                    No Aplica
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="workPhoneNumber">Número de Teléfono del Trabajo</label>
+                        <div class="input-wrapper">
+                            <input type="tel" id="workPhoneNumber" name="telefono_trabajo">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notApplyWorkPhone" name="no_aplica_telefono_trabajo">
+                                    No Aplica
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p class="question">P: ¿Ha utilizado algún otro número de teléfono en los últimos cinco años?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="otros_telefonos_5_anos" value="si"> Sí</label>
+                            <label><input type="radio" name="otros_telefonos_5_anos" value="no" checked> No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Dirección de Casa</div>
+                        <p>Ingrese su dirección de residencia principal.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Dirección Postal</div>
+                        <p>Si su dirección postal es diferente de su domicilio, proporcione la dirección completa.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Teléfono</div>
+                        <p>Ingrese los números de teléfono donde se le pueda contactar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de Contacto (Emails y Redes Sociales) -->
+            <div class="section-title" style="margin-top: 40px;">Información de Contacto</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <div class="form-group">
+                        <label for="emailAddress">Dirección de Correo Electrónico</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="emailAddress" name="email_principal" placeholder="ej: direcciondecorreo@ejemplo.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p class="question">P: ¿Ha utilizado alguna otra dirección de correo electrónico en los últimos cinco años?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="otros_emails_5_anos" value="si"> Sí</label>
+                            <label><input type="radio" name="otros_emails_5_anos" value="no" checked> No</label>
+                        </div>
+                    </div>
+
+                    <div class="sub-section-title">Redes Sociales</div>
+                    <div class="form-group">
+                        <p class="question">¿Tiene presencia en redes sociales?</p>
+                        <div class="input-wrapper">
+                            <p class="help-text" style="width: 100%; margin-left: 0; margin-bottom: 10px;">Seleccione de la lista a continuación cada plataforma de redes sociales que haya utilizado en los últimos cinco años. En el espacio siguiente al nombre de la plataforma, ingrese el nombre de usuario o identificador que haya utilizado en esa plataforma. No proporcione sus contraseñas. Si ha utilizado más de una plataforma o más de un nombre de usuario o identificador en una sola plataforma, haga clic en el botón 'Añadir Otro' para listar cada una por separado. Si no ha utilizado ninguna de las plataformas de redes sociales listadas en los últimos cinco años, seleccione 'Ninguno'.</p>
+                            <label for="socialMediaPlatform">Proveedor/Plataforma de Redes Sociales</label>
+                            <select id="socialMediaPlatform" name="plataforma_red_social">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="none">Ninguno</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="twitter">Twitter (X)</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="youtube">YouTube</option>
+                                <option value="other">Otro</option>
+                            </select>
+                            <label for="socialMediaIdentifier" style="margin-top: 10px;">Identificador de Red Social</label>
+                            <input type="text" id="socialMediaIdentifier" name="identificador_red_social">
+                            <div class="add-remove-links">
+                                <a href="#"><span class="icon">+</span> Añadir Otro</a>
+                                <a href="#"><span class="icon">=</span> Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="question">P: ¿Desea proporcionar información sobre su presencia en otros sitios web o aplicaciones que haya utilizado en los últimos cinco años para crear o compartir contenido (fotos, videos, actualizaciones de estado, etc.)?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="compartir_contenido_otros_sitios" value="si"> Sí</label>
+                            <label><input type="radio" name="compartir_contenido_otros_sitios" value="no" checked> No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Correo Electrónico</div>
+                        <p>Ingrese su dirección de correo electrónico principal.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Redes Sociales</div>
+                        <p>Proporcione los identificadores de sus cuentas de redes sociales.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de Pasaporte -->
+            <div class="section-title" style="margin-top: 40px;">Información de Pasaporte</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <div class="form-group">
+                        <label for="passportType">Tipo de Pasaporte/Documento de Viaje <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <select id="passportType" name="tipo_pasaporte">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="ordinario">Ordinario</option>
+                                <option value="diplomatico">Diplomático</option>
+                                <option value="oficial">Oficial</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passportNumber">Número de Pasaporte/Documento de Viaje</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="passportNumber" name="numero_pasaporte">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passportBookNumber">Número de Libro de Pasaporte</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="passportBookNumber" name="numero_libro_pasaporte">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notApplyPassportBookNumber" name="no_aplica_numero_libro_pasaporte">
+                                    No Aplica
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passportIssueAuthority">País/Autoridad que Emitió Pasaporte/Documento de Viaje</label>
+                        <div class="input-wrapper">
+                            <select id="passportIssueAuthority" name="autoridad_emision_pasaporte">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="colombia">COLOMBIA</option>
+                                <option value="usa">ESTADOS UNIDOS</option>
+                                <!-- Añadir más países -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sub-section-title">¿Dónde se emitió el Pasaporte/Documento de Viaje?</div>
+                    <div class="form-group">
+                        <label for="passportIssueCity">Ciudad</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="passportIssueCity" name="ciudad_emision_pasaporte">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passportIssueStateProvince">Estado/Provincia *Si se muestra en el pasaporte</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="passportIssueStateProvince" name="estado_provincia_emision_pasaporte">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passportIssueCountryRegion">País/Región</label>
+                        <div class="input-wrapper">
+                            <select id="passportIssueCountryRegion" name="pais_region_emision_pasaporte">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="colombia">COLOMBIA</option>
+                                <option value="usa">ESTADOS UNIDOS</option>
+                                <!-- Añadir más países -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passportIssueDate">Fecha de Emisión <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <input type="date" id="passportIssueDate" name="fecha_emision_pasaporte">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passportExpirationDate">Fecha de Caducidad <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <input type="date" id="passportExpirationDate" name="fecha_caducidad_pasaporte">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="noExpirationPassport" name="pasaporte_sin_caducidad">
+                                    Sin Caducidad
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p class="question">P: ¿Ha perdido alguna vez un pasaporte o le han robado uno?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="pasaporte_perdido_robado" value="si"> Sí</label>
+                            <label><input type="radio" name="pasaporte_perdido_robado" value="no" checked> No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Pasaporte</div>
+                        <p>Ingrese los detalles de su pasaporte o documento de viaje.</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Sección de Viaje -->
             <div class="section-title" style="margin-top: 40px;">Viaje</div>
             <div class="grid-container">
                 <div class="grid-left">
@@ -487,7 +848,7 @@
                     <div class="form-group">
                         <label for="purposeOfTrip">Propósito del Viaje a EE. UU. <span class="info-icon">ⓘ</span></label>
                         <div class="input-wrapper">
-                            <select id="purposeOfTrip" name="purposeOfTrip">
+                            <select id="purposeOfTrip" name="proposito_viaje">
                                 <option value="">POR FAVOR, SELECCIONE UNA CLASE DE VISA</option>
                                 <option value="A">FUNCIONARIO DE GOBIERNO EXTRANJERO (A)</option>
                                 <option value="B">VISITANTE TEMPORAL DE NEGOCIOS O PLACER (B)</option>
@@ -508,19 +869,33 @@
                                 <option value="O">EXTRANJERO CON HABILIDAD EXTRAORDINARIA (O)</option>
                                 <option value="P">EXTRANJERO RECONOCIDO INTERNACIONALMENTE (P)</option>
                                 <option value="Q">VISITANTE DE INTERCAMBIO CULTURAL (Q)</option>
-                                </select>
+                                <!-- Añade más clases de visa según sea necesario -->
+                            </select>
                             <div class="add-remove-links">
                                 <a href="#"><span class="icon">+</span> Añadir Otro</a>
                                 <a href="#"><span class="icon">=</span> Eliminar</a>
                             </div>
                         </div>
                     </div>
+                     <!-- Campo de "Specify" para visa J (J1, J2, etc.) -->
+                     <div class="form-group" id="specifyJVisa" style="display: none;">
+                        <label for="specifyVisaType">Especificar <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <select id="specifyVisaType" name="especificar_visa_j">
+                                <option value="">- SELECCIONE -</option>
+                                <option value="J1">VISITANTE DE INTERCAMBIO (J1)</option>
+                                <option value="J2_CHILD">HIJO DE AJ1 (J2)</option>
+                                <option value="J2_SPOUSE">CÓNYUGE DE AJ1 (J2)</option>
+                            </select>
+                        </div>
+                    </div>
+
 
                     <div class="form-group">
                         <p class="question">P: ¿Ha realizado planes de viaje específicos?</p>
                         <div class="radio-group">
-                            <label><input type="radio" name="specificTravelPlans" value="si" id="travelPlansYes"> Sí</label>
-                            <label><input type="radio" name="specificTravelPlans" value="no" id="travelPlansNo" checked> No</label>
+                            <label><input type="radio" name="planes_viaje_especificos" value="si" id="travelPlansYes"> Sí</label>
+                            <label><input type="radio" name="planes_viaje_especificos" value="no" id="travelPlansNo" checked> No</label>
                         </div>
                     </div>
 
@@ -529,37 +904,37 @@
                         <div class="form-group">
                             <label for="dateOfArrival">Fecha de Llegada a EE. UU. <span class="info-icon">ⓘ</span></label>
                             <div class="input-wrapper">
-                                <input type="date" id="dateOfArrival" name="dateOfArrival" placeholder="(Formato: DD-MMM-AAAA)">
+                                <input type="date" id="dateOfArrival" name="fecha_llegada_eeuu" placeholder="(Formato: DD-MMM-AAAA)">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="arrivalFlight">Vuelo de Llegada (si se conoce)</label>
                             <div class="input-wrapper">
-                                <input type="text" id="arrivalFlight" name="arrivalFlight">
+                                <input type="text" id="arrivalFlight" name="vuelo_llegada">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="arrivalCity">Ciudad de Llegada</label>
                             <div class="input-wrapper">
-                                <input type="text" id="arrivalCity" name="arrivalCity">
+                                <input type="text" id="arrivalCity" name="ciudad_llegada">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="dateOfDeparture">Fecha de Salida de EE. UU. <span class="info-icon">ⓘ</span></label>
                             <div class="input-wrapper">
-                                <input type="date" id="dateOfDeparture" name="dateOfDeparture" placeholder="(Formato: DD-MMM-AAAA)">
+                                <input type="date" id="dateOfDeparture" name="fecha_salida_eeuu" placeholder="(Formato: DD-MMM-AAAA)">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="departureFlight">Vuelo de Salida (si se conoce)</label>
                             <div class="input-wrapper">
-                                <input type="text" id="departureFlight" name="departureFlight">
+                                <input type="text" id="departureFlight" name="vuelo_salida">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="departureCity">Ciudad de Salida</label>
                             <div class="input-wrapper">
-                                <input type="text" id="departureCity" name="departureCity">
+                                <input type="text" id="departureCity" name="ciudad_salida">
                             </div>
                         </div>
 
@@ -567,7 +942,7 @@
                         <div class="form-group">
                             <label for="locationToVisit">Ubicación</label>
                             <div class="input-wrapper">
-                                <input type="text" id="locationToVisit" name="locationToVisit">
+                                <input type="text" id="locationToVisit" name="ubicacion_a_visitar">
                                 <div class="add-remove-links">
                                     <a href="#"><span class="icon">+</span> Añadir Otro</a>
                                     <a href="#"><span class="icon">=</span> Eliminar</a>
@@ -579,7 +954,7 @@
                     <div class="form-group" id="intendedStayBlock">
                         <label for="intendedLengthOfStay">Duración Prevista de Estancia en EE. UU. <span class="info-icon">ⓘ</span></label>
                         <div class="input-wrapper">
-                            <select id="intendedLengthOfStay" name="intendedLengthOfStay">
+                            <select id="intendedLengthOfStay" name="duracion_estancia_prevista">
                                 <option value="">- SELECCIONE UNO -</option>
                                 <option value="1week">1 Semana</option>
                                 <option value="2weeks">2 Semanas</option>
@@ -595,29 +970,30 @@
                     <div class="form-group">
                         <label for="streetAddress1">Dirección (Línea 1)</label>
                         <div class="input-wrapper">
-                            <input type="text" id="streetAddress1" name="streetAddress1">
+                            <input type="text" id="streetAddress1" name="direccion_estancia_linea1">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="streetAddress2">Dirección (Línea 2) *Opcional</label>
                         <div class="input-wrapper">
-                            <input type="text" id="streetAddress2" name="streetAddress2">
+                            <input type="text" id="streetAddress2" name="direccion_estancia_linea2">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="cityStay">Ciudad</label>
                         <div class="input-wrapper">
-                            <input type="text" id="cityStay" name="cityStay">
+                            <input type="text" id="cityStay" name="ciudad_estancia">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="stateStay">Estado</label>
                         <div class="input-wrapper">
-                            <select id="stateStay" name="stateStay">
+                            <select id="stateStay" name="estado_estancia">
                                 <option value="">- SELECCIONE UNO -</option>
                                 <option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>
+                                <!-- Añade todos los estados de EE. UU. -->
                                 <option value="WY">Wyoming</option>
                             </select>
                         </div>
@@ -625,14 +1001,14 @@
                     <div class="form-group">
                         <label for="zipCodeStay">Código Postal (si se conoce)</label>
                         <div class="input-wrapper">
-                            <input type="text" id="zipCodeStay" name="zipCodeStay" placeholder="Ej: 12345 o 12345-1234">
+                            <input type="text" id="zipCodeStay" name="codigo_postal_estancia" placeholder="Ej: 12345 o 12345-1234">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="payer">Persona/Entidad Que Paga Su Viaje <span class="info-icon">ⓘ</span></label>
                         <div class="input-wrapper">
-                            <select id="payer" name="payer">
+                            <select id="payer" name="quien_paga_viaje">
                                 <option value="">-SELECCIONE UNO-</option>
                                 <option value="SELF">YO MISMO</option>
                                 <option value="U.S. PETITIONER">PETICIONARIO DE EE. UU.</option>
@@ -657,6 +1033,7 @@
                 </div>
             </div>
 
+            <!-- Compañeros de Viaje -->
             <div class="section-title" style="margin-top: 40px;">Compañeros de Viaje</div>
             <div class="grid-container">
                 <div class="grid-left">
@@ -664,8 +1041,8 @@
                     <div class="form-group">
                         <p class="question">P: ¿Hay otras personas viajando con usted?</p>
                         <div class="radio-group">
-                            <label><input type="radio" name="travelingWithOthers" value="si"> Sí</label>
-                            <label><input type="radio" name="travelingWithOthers" value="no" checked> No</label>
+                            <label><input type="radio" name="viaja_con_otros" value="si" id="travelingWithOthersYes"> Sí</label>
+                            <label><input type="radio" name="viaja_con_otros" value="no" id="travelingWithOthersNo" checked> No</label>
                         </div>
                     </div>
                 </div>
@@ -677,6 +1054,682 @@
                 </div>
             </div>
 
+            <!-- Preguntas de Viaje Previo a EE.UU. -->
+            <div class="section-title" style="margin-top: 40px;">Viajes Previos a EE. UU.</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <div class="form-group">
+                        <p class="question">P: ¿Ha estado alguna vez en EE. UU.?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="ha_estado_eeuu" value="si" id="beenInUSYes"> Sí</label>
+                            <label><input type="radio" name="ha_estado_eeuu" value="no" id="beenInUSNo" checked> No</label>
+                        </div>
+                    </div>
+                    <div id="pastTravelDetails">
+                        <div class="sub-section-title">Detalles de Viajes Anteriores</div>
+                        <div class="form-group">
+                            <label for="pastTravelDateArrival">Fecha de Llegada</label>
+                            <div class="input-wrapper">
+                                <input type="date" id="pastTravelDateArrival" name="fecha_llegada_anterior">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pastTravelDateDeparture">Fecha de Salida</label>
+                            <div class="input-wrapper">
+                                <input type="date" id="pastTravelDateDeparture" name="fecha_salida_anterior">
+                            </div>
+                        </div>
+                        <div class="add-remove-links" style="margin-bottom: 20px;">
+                            <a href="#"><span class="icon">+</span> Añadir Otro Viaje</a>
+                            <a href="#"><span class="icon">=</span> Eliminar Último Viaje</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="question">P: ¿Se le ha expedido alguna vez un visado estadounidense?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="visa_expedida" value="si" id="visaIssuedYes"> Sí</label>
+                            <label><input type="radio" name="visa_expedida" value="no" id="visaIssuedNo" checked> No</label>
+                        </div>
+                    </div>
+                    <div id="previousVisaDetails">
+                        <div class="sub-section-title">Detalles de Visado Anterior</div>
+                        <div class="form-group">
+                            <label for="visaIssueDate">Fecha de Emisión del Visado</label>
+                            <div class="input-wrapper">
+                                <input type="date" id="visaIssueDate" name="fecha_emision_visa">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="visaNumber">Número de Visado</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="visaNumber" name="numero_visa">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="question">P: ¿Se le ha denegado alguna vez un visado estadounidense, o se le ha denegado la admisión a Estados Unidos, o ha retirado su solicitud de admisión en el puerto de entrada?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="visa_denegada_admision" value="si" id="visaRefusedYes"> Sí</label>
+                            <label><input type="radio" name="visa_denegada_admision" value="no" id="visaRefusedNo" checked> No</label>
+                        </div>
+                    </div>
+                    <div id="previousRefusalDetails">
+                        <div class="sub-section-title">Explicación</div>
+                        <div class="form-group">
+                            <label for="refusalExplanation">Proporcione una explicación:</label>
+                            <div class="input-wrapper">
+                                <textarea id="refusalExplanation" name="explicacion_denegacion" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="question">P: ¿Alguna vez alguien ha presentado una petición de inmigrante en su nombre ante el Servicio de Ciudadanía e Inmigración de los Estados Unidos?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="peticion_inmigrante" value="si" id="immigrantPetitionYes"> Sí</label>
+                            <label><input type="radio" name="peticion_inmigrante" value="no" id="immigrantPetitionNo" checked> No</label>
+                        </div>
+                    </div>
+                    <div id="immigrantPetitionDetails">
+                         <div class="sub-section-title">Detalles de la Petición</div>
+                        <div class="form-group">
+                            <label for="petitionExplanation">Proporcione una explicación:</label>
+                            <div class="input-wrapper">
+                                <textarea id="petitionExplanation" name="explicacion_peticion" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Viajes Previos</div>
+                        <p>Ingrese los detalles de cualquier viaje anterior a los Estados Unidos.</p>
+                    </div>
+                     <div class="help-block">
+                        <div class="help-header">Ayuda: Visado Expedido</div>
+                        <p>Proporcione la fecha y el número de cualquier visado estadounidense previamente expedido.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Denegación/Retiro</div>
+                        <p>Si se le ha denegado un visado o la admisión, o ha retirado una solicitud, proporcione todos los detalles.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Petición de Inmigrante</div>
+                        <p>Indique si se ha presentado alguna petición de inmigrante en su nombre y proporcione los detalles.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de Contacto en EE.UU. -->
+            <div class="section-title" style="margin-top: 40px;">Información de Contacto en EE. UU.</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <div class="sub-section-title">Persona u Organización de Contacto en los Estados Unidos</div>
+                    <div class="form-group">
+                        <label for="contactSurnames">Apellidos de la Persona de Contacto</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="contactSurnames" name="contacto_apellidos" placeholder="Ej: ARDILA">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowContactSurnames" name="no_se_apellidos_contacto">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactGivenNames">Nombres de la Persona de Contacto</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="contactGivenNames" name="contacto_nombres" placeholder="Ej: CAROLA">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowContactGivenNames" name="no_se_nombres_contacto">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="organizationName">Nombre de la Organización</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="organizationName" name="nombre_organizacion_contacto">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowOrganizationName" name="no_se_nombre_organizacion_contacto">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="relationshipToYou">Relación con Usted <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <select id="relationshipToYou" name="relacion_con_contacto">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="amigo">AMIGO</option>
+                                <option value="familiar">FAMILIAR</option>
+                                <option value="negocio">NEGOCIO</option>
+                                <option value="empleador">EMPLEADOR</option>
+                                <option value="otro">OTRO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sub-section-title">Dirección y Número de Teléfono del Punto de Contacto</div>
+                    <div class="form-group">
+                        <label for="contactStreetAddress1">Dirección de EE. UU. (Línea 1)</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="contactStreetAddress1" name="contacto_direccion_linea1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactStreetAddress2">Dirección de EE. UU. (Línea 2) *Opcional</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="contactStreetAddress2" name="contacto_direccion_linea2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactCity">Ciudad</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="contactCity" name="contacto_ciudad">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactState">Estado</label>
+                        <div class="input-wrapper">
+                            <select id="contactState" name="contacto_estado">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <!-- Añade todos los estados de EE. UU. -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactZipCode">Código Postal (si se conoce)</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="contactZipCode" name="contacto_codigo_postal" placeholder="Ej: 55555 o 55555-5555">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactPhoneNumber">Número de Teléfono</label>
+                        <div class="input-wrapper">
+                            <input type="tel" id="contactPhoneNumber" name="contacto_telefono" placeholder="Ej: 5555555555">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmailAddress">Dirección de Correo Electrónico</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="contactEmailAddress" name="contacto_email" placeholder="Ej: direcciondecorreo@ejemplo.com">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notApplyContactEmail" name="no_aplica_contacto_email">
+                                    No Aplica
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Persona de Contacto</div>
+                        <p>Proporcione la información de contacto de una persona u organización en los Estados Unidos.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Relación</div>
+                        <p>Indique su relación con la persona u organización de contacto.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Familiar -->
+            <div class="section-title" style="margin-top: 40px;">Información Familiar</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <div class="sub-section-title">Nombre Completo y Fecha de Nacimiento del Cónyuge</div>
+                    <div class="form-group">
+                        <p class="question">P: ¿Está casado?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="esta_casado" value="si" id="marriedYes"> Sí</label>
+                            <label><input type="radio" name="esta_casado" value="no" id="marriedNo" checked> No</label>
+                        </div>
+                    </div>
+                    <div id="spouseDetails">
+                        <div class="form-group">
+                            <label for="spouseSurnames">Apellidos del Cónyuge</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="spouseSurnames" name="conyuge_apellidos">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="spouseGivenNames">Nombres del Cónyuge</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="spouseGivenNames" name="conyuge_nombres">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="spouseDob">Fecha de Nacimiento del Cónyuge <span class="info-icon">ⓘ</span></label>
+                            <div class="input-wrapper">
+                                <input type="date" id="spouseDob" name="conyuge_fecha_nacimiento">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="spouseNationality">País/Región de Origen (Nacionalidad) del Cónyuge</label>
+                            <div class="input-wrapper">
+                                <select id="spouseNationality" name="conyuge_nacionalidad">
+                                    <option value="">- SELECCIONE UNO -</option>
+                                    <option value="usa">Estados Unidos</option>
+                                    <option value="colombia">Colombia</option>
+                                    <!-- Añadir más países -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="sub-section-title">Lugar de Nacimiento del Cónyuge</div>
+                        <div class="form-group">
+                            <label for="spouseCityOfBirth">Ciudad</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="spouseCityOfBirth" name="conyuge_ciudad_nacimiento">
+                                <div class="checkbox-group" style="margin-top: 5px;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="doNotKnowSpouseCityOfBirth" name="no_se_conyuge_ciudad_nacimiento">
+                                        No lo sé
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="spouseCountryOfBirth">País/Región</label>
+                            <div class="input-wrapper">
+                                <select id="spouseCountryOfBirth" name="conyuge_pais_nacimiento">
+                                    <option value="">- SELECCIONE UNO -</option>
+                                    <option value="usa">Estados Unidos</option>
+                                    <option value="colombia">Colombia</option>
+                                    <!-- Añadir más países -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="spouseAddress">Dirección del Cónyuge <span class="info-icon">ⓘ</span></label>
+                            <div class="input-wrapper">
+                                <select id="spouseAddress" name="conyuge_direccion_tipo">
+                                    <option value="">- SELECCIONE UNO -</option>
+                                    <option value="sameAsApplicant">Igual que el Solicitante</option>
+                                    <option value="unknown">Desconocida</option>
+                                    <option value="different">Diferente (Proporcionar Abajo)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sub-section-title">Nombre Completo y Fecha de Nacimiento del Padre</div>
+                    <div class="form-group">
+                        <label for="fatherSurnames">Apellidos del Padre</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="fatherSurnames" name="padre_apellidos" placeholder="Ej: Hernandez Garcia">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowFatherSurnames" name="no_se_apellidos_padre">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherGivenNames">Nombres del Padre</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="fatherGivenNames" name="padre_nombres" placeholder="Ej: Juan Miguel">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowFatherGivenNames" name="no_se_nombres_padre">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherDob">Fecha de Nacimiento del Padre <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <input type="date" id="fatherDob" name="padre_fecha_nacimiento">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowFatherDob" name="no_se_fecha_nacimiento_padre">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p class="question">P: ¿Está su padre en EE. UU.?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="padre_en_eeuu" value="si" id="fatherInUSYes"> Sí</label>
+                            <label><input type="radio" name="padre_en_eeuu" value="no" id="fatherInUSNo" checked> No</label>
+                        </div>
+                    </div>
+
+                    <div class="sub-section-title">Nombre Completo y Fecha de Nacimiento de la Madre</div>
+                    <div class="form-group">
+                        <label for="motherSurnames">Apellidos de la Madre</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="motherSurnames" name="madre_apellidos" placeholder="Ej: Hernandez Garcia">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowMotherSurnames" name="no_se_apellidos_madre">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="motherGivenNames">Nombres de la Madre</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="motherGivenNames" name="madre_nombres" placeholder="Ej: Juanita Miguel">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowMotherGivenNames" name="no_se_nombres_madre">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="motherDob">Fecha de Nacimiento de la Madre <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <input type="date" id="motherDob" name="madre_fecha_nacimiento">
+                            <div class="checkbox-group" style="margin-top: 5px;">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="doNotKnowMotherDob" name="no_se_fecha_nacimiento_madre">
+                                    No lo sé
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p class="question">P: ¿Está su madre en EE. UU.?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="madre_en_eeuu" value="si" id="motherInUSYes"> Sí</label>
+                            <label><input type="radio" name="madre_en_eeuu" value="no" id="motherInUSNo" checked> No</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="question">P: ¿Tiene algún pariente inmediato, excluyendo a los padres, en los Estados Unidos?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="parientes_inmediatos_eeuu" value="si" id="immediateRelativesYes"> Sí</label>
+                            <label><input type="radio" name="parientes_inmediatos_eeuu" value="no" id="immediateRelativesNo" checked> No</label>
+                        </div>
+                    </div>
+                    <div id="immediateRelativesDetails">
+                        <div class="sub-section-title">Detalles de Parientes Inmediatos</div>
+                        <div class="form-group">
+                            <label for="relativeRelationship">Relación</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="relativeRelationship" name="relacion_pariente">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="relativeSurnames">Apellidos</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="relativeSurnames" name="pariente_apellidos">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="relativeGivenNames">Nombres</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="relativeGivenNames" name="pariente_nombres">
+                            </div>
+                        </div>
+                         <div class="add-remove-links" style="margin-bottom: 20px;">
+                            <a href="#"><span class="icon">+</span> Añadir Otro Pariente</a>
+                            <a href="#"><span class="icon">=</span> Eliminar Último Pariente</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Cónyuge</div>
+                        <p>Ingrese la información completa de su cónyuge.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Padres</div>
+                        <p>Proporcione el nombre completo y la fecha de nacimiento de sus padres biológicos. Si no conoce alguna información, márquela.</p>
+                    </div>
+                     <div class="help-block">
+                        <div class="help-header">Ayuda: Parientes Inmediatos</div>
+                        <p>Los parientes inmediatos incluyen hermanos, hijos e hijas. Proporcione los detalles de cualquier pariente inmediato en los Estados Unidos, excluyendo a sus padres.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Laboral/Educativa/De Capacitación Actual -->
+            <div class="section-title" style="margin-top: 40px;">Información Laboral/Educativa/De Capacitación Actual</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <p class="note">NOTA: Proporcione la siguiente información relativa a su empleo o educación actual.</p>
+                    <div class="form-group">
+                        <label for="primaryOccupation">Ocupación Principal <span class="info-icon">ⓘ</span></label>
+                        <div class="input-wrapper">
+                            <select id="primaryOccupation" name="ocupacion_principal">
+                                <option value="">- SELECCIONE UNO -</option>
+                                <option value="business">NEGOCIOS</option>
+                                <option value="communications">COMUNICACIONES</option>
+                                <option value="computer_science">INFORMÁTICA</option>
+                                <option value="culinary_food_services">SERVICIOS CULINARIOS/DE ALIMENTACIÓN</option>
+                                <option value="education">EDUCACIÓN</option>
+                                <option value="engineering">INGENIERÍA</option>
+                                <option value="government">GOBIERNO</option>
+                                <option value="homemaker">AMA DE CASA</option>
+                                <option value="legal_profession">PROFESIÓN JURÍDICA</option>
+                                <option value="medical_health">MÉDICO/SALUD</option>
+                                <option value="military">MILITAR</option>
+                                <option value="natural_science">CIENCIAS NATURALES</option>
+                                <option value="not_employed">NO EMPLEADO</option>
+                                <option value="physical_sciences">CIENCIAS FÍSICAS</option>
+                                <option value="religious_vocation">VOCACIÓN RELIGIOSA</option>
+                                <option value="research">INVESTIGACIÓN</option>
+                                <option value="retired">JUBILADO</option>
+                                <option value="social_science">CIENCIAS SOCIALES</option>
+                                <option value="student">ESTUDIANTE</option>
+                                <option value="other">OTRO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="question">P: ¿Estuvo empleado anteriormente?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="empleado_anteriormente" value="si" id="previouslyEmployedYes"> Sí</label>
+                            <label><input type="radio" name="empleado_anteriormente" value="no" id="previouslyEmployedNo" checked> No</label>
+                        </div>
+                    </div>
+                     <div id="previousEmploymentDetails">
+                        <div class="sub-section-title">Detalles de Empleo Anterior</div>
+                         <!-- Campos para empleo anterior si "Sí" -->
+                         <div class="form-group">
+                            <label for="previousEmployer">Nombre del Empleador</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="previousEmployer" name="nombre_empleador_anterior">
+                            </div>
+                        </div>
+                        <div class="add-remove-links" style="margin-bottom: 20px;">
+                            <a href="#"><span class="icon">+</span> Añadir Otro Empleo</a>
+                            <a href="#"><span class="icon">=</span> Eliminar Último Empleo</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="question">P: ¿Ha asistido a alguna institución educativa de nivel secundario o superior?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="ha_asistido_educacion" value="si" id="attendedEducationYes"> Sí</label>
+                            <label><input type="radio" name="ha_asistido_educacion" value="no" id="attendedEducationNo" checked> No</label>
+                        </div>
+                    </div>
+                    <div id="educationDetails">
+                        <div class="sub-section-title">Detalles de Educación</div>
+                        <!-- Campos para educación si "Sí" -->
+                        <div class="form-group">
+                            <label for="schoolName">Nombre de la Institución</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="schoolName" name="nombre_institucion_educativa">
+                            </div>
+                        </div>
+                        <div class="add-remove-links" style="margin-bottom: 20px;">
+                            <a href="#"><span class="icon">+</span> Añadir Otra Institución</a>
+                            <a href="#"><span class="icon">=</span> Eliminar Última Institución</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Ocupación Principal</div>
+                        <p>Seleccione la ocupación que mejor describa su trabajo o actividad principal.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Empleo/Educación Previo</div>
+                        <p>Proporcione los detalles de cualquier empleo o educación anterior relevante.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preguntas de Seguridad y Antecedentes -->
+            <div class="section-title" style="margin-top: 40px;">Preguntas de Seguridad y Antecedentes</div>
+            <div class="grid-container">
+                <div class="grid-left">
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Tiene una enfermedad transmisible de importancia para la salud pública? (Las enfermedades transmisibles de importancia para la salud pública incluyen chancroide, gonorrea, granuloma inguinal, lepra infecciosa, linfogranuloma venéreo, sífilis en etapa infecciosa, tuberculosis activa y otras enfermedades según lo determine el Departamento de Salud y Servicios Humanos).</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="enfermedad_transmisible" value="si"> Sí</label>
+                            <label><input type="radio" name="enfermedad_transmisible" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Tiene un trastorno mental o físico que represente o pueda representar una amenaza para la seguridad o el bienestar propio o de otros?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="trastorno_mental_fisico" value="si"> Sí</label>
+                            <label><input type="radio" name="trastorno_mental_fisico" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Es usted o ha sido alguna vez un consumidor o adicto a las drogas?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="consumidor_adicto_drogas" value="si"> Sí</label>
+                            <label><input type="radio" name="consumidor_adicto_drogas" value="no" checked> No</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Busca participar en espionaje, sabotaje, violaciones de control de exportaciones o cualquier otra actividad ilegal mientras se encuentre en los Estados Unidos?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="espionaje_sabotaje_ilegal" value="si"> Sí</label>
+                            <label><input type="radio" name="espionaje_sabotaje_ilegal" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Busca participar en actividades terroristas mientras se encuentre en los Estados Unidos o ha participado alguna vez en actividades terroristas?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="actividades_terroristas" value="si"> Sí</label>
+                            <label><input type="radio" name="actividades_terroristas" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Ha proporcionado o tiene la intención de proporcionar asistencia financiera u otro tipo de apoyo a terroristas u organizaciones terroristas?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="asistencia_terroristas" value="si"> Sí</label>
+                            <label><input type="radio" name="asistencia_terroristas" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Es usted miembro o representante de una organización terrorista?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="miembro_organizacion_terrorista" value="si"> Sí</label>
+                            <label><input type="radio" name="miembro_organizacion_terrorista" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Es usted el cónyuge, hijo o hija de un individuo que ha participado en actividades terroristas, incluyendo la provisión de asistencia financiera u otro tipo de apoyo a terroristas u organizaciones terroristas, en los últimos cinco años?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="familiar_terrorista_5_anos" value="si"> Sí</label>
+                            <label><input type="radio" name="familiar_terrorista_5_anos" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Alguna vez ha ordenado, incitado, cometido, asistido o participado de otra manera en genocidio?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="participacion_genocidio" value="si"> Sí</label>
+                            <label><input type="radio" name="participacion_genocidio" value="no" checked> No</label>
+                        </div>
+                    </div>
+                     <div class="form-group security-question">
+                        <p class="question">P: ¿Ha sido arrestado o condenado por algún delito o crimen, incluso si fue sujeto de indulto, amnistía u otra acción similar?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="arrestado_condenado" value="si"> Sí</label>
+                            <label><input type="radio" name="arrestado_condenado" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Ha violado o participado en una conspiración para violar alguna ley relacionada con sustancias controladas?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="violacion_sustancias_controladas" value="si"> Sí</label>
+                            <label><input type="radio" name="violacion_sustancias_controladas" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Viene a los Estados Unidos para participar en prostitución o vicio comercializado ilegalmente o ha participado en prostitución o procuración de prostitutas en los últimos 10 años?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="prostitucion_vicio" value="si"> Sí</label>
+                            <label><input type="radio" name="prostitucion_vicio" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Ha estado alguna vez involucrado o busca participar en lavado de dinero?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="lavado_dinero" value="si"> Sí</label>
+                            <label><input type="radio" name="lavado_dinero" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Ha cometido o conspirado alguna vez para cometer un delito de trata de personas en los Estados Unidos o fuera de los Estados Unidos?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="trata_personas" value="si"> Sí</label>
+                            <label><input type="radio" name="trata_personas" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Ha ayudado, instigado, asistido o coludido a sabiendas con un individuo que ha cometido, o conspirado para cometer un delito grave de trata de personas en los Estados Unidos o fuera de los Estados Unidos?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="asistencia_trata_personas" value="si"> Sí</label>
+                            <label><input type="radio" name="asistencia_trata_personas" value="no" checked> No</label>
+                        </div>
+                    </div>
+                    <div class="form-group security-question">
+                        <p class="question">P: ¿Es usted el cónyuge, hijo o hija de un individuo que ha cometido o conspirado para cometer un delito de trata de personas en los Estados Unidos o fuera de los Estados Unidos y ha obtenido beneficios de las actividades de trata en los últimos cinco años?</p>
+                        <div class="radio-group">
+                            <label><input type="radio" name="familiar_trata_personas_5_anos" value="si"> Sí</label>
+                            <label><input type="radio" name="familiar_trata_personas_5_anos" value="no" checked> No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-right">
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Salud</div>
+                        <p>Responda sinceramente a las preguntas relacionadas con su salud. La información es confidencial.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Seguridad</div>
+                        <p>Responda sinceramente a las preguntas de seguridad. La información es confidencial y se utilizará para determinar su elegibilidad.</p>
+                    </div>
+                    <div class="help-block">
+                        <div class="help-header">Ayuda: Antecedentes Legales</div>
+                        <p>Proporcione información precisa sobre cualquier arresto, condena o violación de leyes relacionadas con sustancias controladas, prostitución, lavado de dinero o trata de personas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Declaraciones Finales -->
             <div class="confidentiality-statement">
                 <p>La carga de informes públicos para esta recopilación de información se estima en un promedio de 90 minutos por respuesta, incluido el tiempo requerido para buscar fuentes de datos existentes, recopilar la documentación necesaria, proporcionar la información y/o los documentos requeridos y revisar la recopilación final. No tiene que proporcionar esta información a menos que esta recopilación muestre un número de control OMB actualmente válido. Si tiene comentarios sobre la exactitud de esta estimación de carga y/o recomendaciones para reducirla, envíelos a: <a href="mailto:PRA_BurdenComments@state.gov">PRA_BurdenComments@state.gov</a></p>
                 <p><strong>Declaración de Confidencialidad</strong><br>
@@ -684,38 +1737,192 @@
             </div>
 
             <div class="button-group">
-                <button class="back-button" type="button">◄ Atrás: Viaje</button>
-                <button class="save-button" type="button">Guardar</button>
-                <button class="next-button" type="submit">Siguiente: Viajes Previos a EE. UU. ►</button>
+                <button class="submit-button" type="submit">Guardar y Finalizar</button>
             </div>
         </form>
 
     </div>
 
     <script>
-        // JavaScript para mostrar/ocultar los planes de viaje específicos según la selección del radio button
         document.addEventListener('DOMContentLoaded', function() {
+            // Lógica para mostrar/ocultar detalles de planes de viaje (si/no en "planes_viaje_especificos")
             const travelPlansYes = document.getElementById('travelPlansYes');
             const travelPlansNo = document.getElementById('travelPlansNo');
             const specificTravelPlansDetails = document.getElementById('specificTravelPlansDetails');
-            const intendedStayBlock = document.getElementById('intendedStayBlock'); // Bloque para la duración de la estancia prevista
+            const intendedStayBlock = document.getElementById('intendedStayBlock');
 
             function toggleTravelPlanDetails() {
                 if (travelPlansYes.checked) {
                     specificTravelPlansDetails.style.display = 'block';
-                    intendedStayBlock.style.display = 'none'; // Ocultar si hay planes específicos
+                    intendedStayBlock.style.display = 'none';
                 } else {
                     specificTravelPlansDetails.style.display = 'none';
-                    intendedStayBlock.style.display = 'flex'; // Mostrar si no hay planes específicos
+                    intendedStayBlock.style.display = 'flex';
                 }
             }
-
-            // Estado inicial
-            toggleTravelPlanDetails();
-
-            // Añadir escuchadores de eventos para los cambios
             travelPlansYes.addEventListener('change', toggleTravelPlanDetails);
             travelPlansNo.addEventListener('change', toggleTravelPlanDetails);
+            toggleTravelPlanDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar detalles de dirección postal (si/no en "sameMailingAddress")
+            const sameMailingAddressYes = document.getElementById('sameMailingAddressYes');
+            const sameMailingAddressNo = document.getElementById('sameMailingAddressNo');
+            const mailingAddressDetails = document.getElementById('mailingAddressDetails');
+
+            function toggleMailingAddressDetails() {
+                if (sameMailingAddressNo.checked) {
+                    mailingAddressDetails.style.display = 'flex';
+                } else {
+                    mailingAddressDetails.style.display = 'none';
+                }
+            }
+            sameMailingAddressYes.addEventListener('change', toggleMailingAddressDetails);
+            sameMailingAddressNo.addEventListener('change', toggleMailingAddressDetails);
+            toggleMailingAddressDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar detalles de viajes anteriores (si/no en "ha_estado_eeuu")
+            const beenInUSYes = document.getElementById('beenInUSYes');
+            const beenInUSNo = document.getElementById('beenInUSNo');
+            const pastTravelDetails = document.getElementById('pastTravelDetails');
+
+            function togglePastTravelDetails() {
+                if (beenInUSYes.checked) {
+                    pastTravelDetails.style.display = 'block';
+                } else {
+                    pastTravelDetails.style.display = 'none';
+                }
+            }
+            beenInUSYes.addEventListener('change', togglePastTravelDetails);
+            beenInUSNo.addEventListener('change', togglePastTravelDetails);
+            togglePastTravelDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar detalles de visado expedido (si/no en "visa_expedida")
+            const visaIssuedYes = document.getElementById('visaIssuedYes');
+            const visaIssuedNo = document.getElementById('visaIssuedNo');
+            const previousVisaDetails = document.getElementById('previousVisaDetails');
+
+            function togglePreviousVisaDetails() {
+                if (visaIssuedYes.checked) {
+                    previousVisaDetails.style.display = 'block';
+                } else {
+                    previousVisaDetails.style.display = 'none';
+                }
+            }
+            visaIssuedYes.addEventListener('change', togglePreviousVisaDetails);
+            visaIssuedNo.addEventListener('change', togglePreviousVisaDetails);
+            togglePreviousVisaDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar detalles de denegación/retiro (si/no en "visa_denegada_admision")
+            const visaRefusedYes = document.getElementById('visaRefusedYes');
+            const visaRefusedNo = document.getElementById('visaRefusedNo');
+            const previousRefusalDetails = document.getElementById('previousRefusalDetails');
+
+            function togglePreviousRefusalDetails() {
+                if (visaRefusedYes.checked) {
+                    previousRefusalDetails.style.display = 'block';
+                } else {
+                    previousRefusalDetails.style.display = 'none';
+                }
+            }
+            visaRefusedYes.addEventListener('change', togglePreviousRefusalDetails);
+            visaRefusedNo.addEventListener('change', togglePreviousRefusalDetails);
+            togglePreviousRefusalDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar detalles de petición de inmigrante (si/no en "peticion_inmigrante")
+            const immigrantPetitionYes = document.getElementById('immigrantPetitionYes');
+            const immigrantPetitionNo = document.getElementById('immigrantPetitionNo');
+            const immigrantPetitionDetails = document.getElementById('immigrantPetitionDetails');
+
+            function toggleImmigrantPetitionDetails() {
+                if (immigrantPetitionYes.checked) {
+                    immigrantPetitionDetails.style.display = 'block';
+                } else {
+                    immigrantPetitionDetails.style.display = 'none';
+                }
+            }
+            immigrantPetitionYes.addEventListener('change', toggleImmigrantPetitionDetails);
+            immigrantPetitionNo.addEventListener('change', toggleImmigrantPetitionDetails);
+            toggleImmigrantPetitionDetails(); // Estado inicial
+
+
+            // Lógica para mostrar/ocultar detalles del cónyuge (si/no en "esta_casado")
+            const marriedYes = document.getElementById('marriedYes');
+            const marriedNo = document.getElementById('marriedNo');
+            const spouseDetails = document.getElementById('spouseDetails');
+
+            function toggleSpouseDetails() {
+                if (marriedYes.checked) {
+                    spouseDetails.style.display = 'block';
+                } else {
+                    spouseDetails.style.display = 'none';
+                }
+            }
+            marriedYes.addEventListener('change', toggleSpouseDetails);
+            marriedNo.addEventListener('change', toggleSpouseDetails);
+            toggleSpouseDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar detalles de empleo anterior (si/no en "empleado_anteriormente")
+            const previouslyEmployedYes = document.getElementById('previouslyEmployedYes');
+            const previouslyEmployedNo = document.getElementById('previouslyEmployedNo');
+            const previousEmploymentDetails = document.getElementById('previousEmploymentDetails');
+
+            function togglePreviousEmploymentDetails() {
+                if (previouslyEmployedYes.checked) {
+                    previousEmploymentDetails.style.display = 'block';
+                } else {
+                    previousEmploymentDetails.style.display = 'none';
+                }
+            }
+            previouslyEmployedYes.addEventListener('change', togglePreviousEmploymentDetails);
+            previouslyEmployedNo.addEventListener('change', togglePreviousEmploymentDetails);
+            togglePreviousEmploymentDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar detalles de educación (si/no en "ha_asistido_educacion")
+            const attendedEducationYes = document.getElementById('attendedEducationYes');
+            const attendedEducationNo = document.getElementById('attendedEducationNo');
+            const educationDetails = document.getElementById('educationDetails');
+
+            function toggleEducationDetails() {
+                if (attendedEducationYes.checked) {
+                    educationDetails.style.display = 'block';
+                } else {
+                    educationDetails.style.display = 'none';
+                }
+            }
+            attendedEducationYes.addEventListener('change', toggleEducationDetails);
+            attendedEducationNo.addEventListener('change', toggleEducationDetails);
+            toggleEducationDetails(); // Estado inicial
+
+            // Lógica para mostrar/ocultar el campo "Specify" para visa J
+            const purposeOfTrip = document.getElementById('purposeOfTrip');
+            const specifyJVisa = document.getElementById('specifyJVisa');
+
+            function toggleSpecifyJVisa() {
+                if (purposeOfTrip.value === 'J') {
+                    specifyJVisa.style.display = 'flex';
+                } else {
+                    specifyJVisa.style.display = 'none';
+                }
+            }
+            purposeOfTrip.addEventListener('change', toggleSpecifyJVisa);
+            toggleSpecifyJVisa(); // Estado inicial
+
+            // Lógica para mostrar/ocultar parientes inmediatos
+            const immediateRelativesYes = document.getElementById('immediateRelativesYes');
+            const immediateRelativesNo = document.getElementById('immediateRelativesNo');
+            const immediateRelativesDetails = document.getElementById('immediateRelativesDetails');
+
+            function toggleImmediateRelativesDetails() {
+                if (immediateRelativesYes.checked) {
+                    immediateRelativesDetails.style.display = 'block';
+                } else {
+                    immediateRelativesDetails.style.display = 'none';
+                }
+            }
+            immediateRelativesYes.addEventListener('change', toggleImmediateRelativesDetails);
+            immediateRelativesNo.addEventListener('change', toggleImmediateRelativesDetails);
+            toggleImmediateRelativesDetails(); // Estado inicial
+
         });
     </script>
 </body>
